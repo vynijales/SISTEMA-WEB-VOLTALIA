@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    {{ pessoa.id }} - {{ pessoa.nome }}
+
+    <!-- crUd (update) -->
+    <form action="{% url 'update' pessoa.id %}" method="post">
+        {% csrf_token %} <!-- Token que protege o form de um determinado tipo de ataque, é obrigatório a inclusão desssa linha de comando -->
+        <input type="text" name="nome" value="{{ pessoa.nome }}">
+        <button type="submit">Salvar</button>
+
+</body>
+</html>

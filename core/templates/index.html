@@ -8,5 +8,27 @@
 </head>
 <body>
     <div>Hello World</div>
+
+    <ul>
+    <!-- Jinja -->
+    <!-- Double Chaves são para variáveis, Chaves são para comandos -->
+    <!-- cRud (read) -->
+    {% for pessoa in pessoas %}
+        <li>{{ pessoa.id}} - {{ pessoa.nome }}
+            <!-- crUd (update) -->
+            <a href="{% url 'editar' pessoa.id %}">Editar</a>
+            <!-- cruD (delete) -->
+            <a href="{% url 'delete' pessoa.id %}">Deletar</a>
+            {% endfor%} </li>
+    </ul>
+
+    <!-- Crud (create) -->
+    <form action="{% url 'salvar' %}" method="post">
+        {% csrf_token %} <!-- Token que protege o form de um determinado tipo de ataque, é obrigatório a inclusão desssa linha de comando -->
+        <input type="text" name="nome">
+        <button type="submit">Salvar</button>
+    </form>
+
+    
 </body>
 </html>
