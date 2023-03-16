@@ -25,15 +25,7 @@
     <script>
       mapboxgl.accessToken = 'pk.eyJ1IjoidnluaWphbGVzIiwiYSI6ImNsZjh4YWo5bDBpaHMzcmtlZzM3MGJoZ2gifQ._Wm3t6w7QFppRKUvL6CXYA';
 
-      var map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v11',
-        center: [-0.09, 51.505],
-        zoom: 13
-      });
-
-      map.on('load', function () {
-        var coordinates = [
+      let coordinates = [
           [-0.09, 51.505],
           [-0.08, 51.505],
           [-0.1, 51.5],
@@ -42,6 +34,16 @@
           [-0.1, 51.505]
         ];
 
+
+      var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [-0.09, 51.505],
+        zoom: 13
+      });
+
+      map.on('load', function () {
+  
         // Adiciona o mapa de calor
         map.addLayer({
           id: 'heatmap',
@@ -83,9 +85,12 @@
         });
 
         // Adiciona o marcador
-        new mapboxgl.Marker()
-          .setLngLat([-0.09, 51.505])
+        
+        coordinates.forEach(element => {
+          new mapboxgl.Marker()
+          .setLngLat(element)
           .addTo(map);
+        });
       });
     </script>
   </body>
