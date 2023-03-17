@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8' />
+  <title>Mapa de calor com Mapbox GL JS</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.css' rel='stylesheet' />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    .fixed-top {
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: 0;
+      z-index: 1030;
+      background-color: #fff;
+      border-bottom: solid 1px #eee;
+    }
+
+    #map {
+      height: 700px;
+      border: solid 20px #000;
+      margin-top: 58px;
+    }
+
+    .teste {
+      background-color: aqua;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="fixed-top">
+    <div class="container text-left">
+      <div class="row align-items-center logo ">
+        <div class="col d-flex align-items-center col-sm-6 col-md-8">
+          <a href="#">
+            <img id="logo"
+              src="https://www.voltalia.com/sites/g/files/knoqqb77836/themes/site/nir_pid3850/dist/images/logo.png"
+              alt="Voltalia">
+          </a>
+        </div>
+        <div class="col col-6 col-md-4">
+          <form id="myForm" action="/submit" method="post">
+            <div class="form-floating">
+              <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                <option value="janeiro21">Janeiro 2021</option>
+                <option value="fevereiro21">Fevereiro 2021</option>
+                <option value="marco21">Março 2021</option>
+                <option value="abril21">Abril 2021</option>
+                <option value="maio21">Maio 2021</option>
+                <option value="junho21">Junho 2021</option>
+                <option value="julho21">Julho 2021</option>
+                <option value="agosto21">Agosto 2021</option>
+                <option value="setembro21">Setembro 2021</option>
+                <option value="outubro21">Outubro 2021</option>
+                <option value="novembro21">Novembro 2021</option>
+                <option value="dezembro21">Dezembro 2021</option>
+                <option value="Janeiro22">Janeiro 2021</option>
+              </select>
+              <label for="floatingSelect">Amostras</label>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </header>
+
+  <div class="border" id='map'></div>
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.js'></script>
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoidnluaWphbGVzIiwiYSI6ImNsZjh4YWo5bDBpaHMzcmtlZzM3MGJoZ2gifQ._Wm3t6w7QFppRKUvL6CXYA';
+
+    // mapboxgl.accessToken = 'YOUR_ACCESS_TOKEN_HERE';
+
+    let coordinates = [
+      [16.90874, 45.34907],
+      [17.15, 4.317083],
+      [17.40555, 44.00693],
+      [17.10456, 42.80334],
+      [17.33147, 43.25468],
+      [16.61088, 43.14725],
+      [16.65065, 43.09689],
+    ];
+
+    let weights = [1, 2, 3, 4, 5, 6, 7];
+
+    let data = {
+      type: 'FeatureCollection',
+      features: coordinates.map((coordinate, index) => {
+        return {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: coordinate,
+          },
+          properties: {
+            weight: weights[index],
+          },
+        };
+      }),
+    };
+
+    let map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [1.690874, 4.534907],
+      zoom: 1,
+    });
+
+    map.on('load', function () {
+      // Adiciona o mapa de calor
+      map.addLayer({
+        id: 'heatmap',
+        type: 'circle',
+        source: {
+          type: 'geojson',
+          data: data,
+        },
+        'paint': {
+          'circle-color': [
+            'interpolate',
+            ['linear'],
+            ['get', 'weight'],
+              0, 'hsl(240, 100%, 50%)',
+              2, 'hsl(60, 100%, 50%)',
+              4, 'hsl(30, 100%, 50%)',
+              6, 'hsl(0, 100%, 50%)'
+
+          ],
+          'circle-radius': {
+            'stops': [
+              [0, 5],
+              [2, 10],
+              [4, 15],
+              [6, 20],
+              [8, 25]
+            ]
+          },
+          'circle-opacity': 0.5,
+          'circle-radius': 30
+        }
+
+      });
+
+
+      // Adiciona o marcador
+      coordinates.forEach(element => {
+        new mapboxgl.Marker()
+          .setLngLat(element)
+          .addTo(map);
+      });
+    });
+
+
+
+    // Formulário
+    const form = document.getElementById('myForm');
+    const select = document.getElementById('meses');
+
+    select.addEventListener('change', function () {
+      form.submit();
+    });
+
+
+
+  </script>
+
+
+  <footer class="bd-footer ">
+    <div class="container py-4 py-md-5 px-4 px-md-3 text-body-secondary">
+      <div class="row align-items-center">
+        <div class="row mb-3">
+          <a class="d-inline-flex align-items-center mb-2 text-body-secondary text-decoration-none" href="/"
+            aria-label="Bootstrap">
+            <h4 class="fs-5">Projeto: Voltalia</h4>
+          </a>
+          <ul class="list-unstyled small">
+            <li class="mb-2">Este site foi projetado com base no modelo fornecido pela empresa Voltalia
+              (www.voltalia.com) e inclui o uso do logotipo da empresa. Agradecemos à Voltalia pela disponibilização do
+              modelo e pela inspiração para o design deste site.</li>
+            <!-- <li class="mb-2">Atualmente v1.0.0-alpha.</li> -->
+          </ul>
+        </div>
+        <div class="row d-flex align-items-center row-sm-6 row-md-8">
+          <!-- <div class="row">
+          <h5>Entre em contato</h5>
+          <ul class="list-unstyled">
+            <li class="row mb-2"><a href="mailto:vynijales@gmail.com">E-mail pessoal</a></li>
+            <li class="row mb-2"><a href="mailto:matheus.jales@alunos.ufersa.edu.br">E-mail da UFERSA</a></li>
+            <li class="row mb-2"><a href="https://wa.me/5584933004187">WhatsApp pessoal</a></li>
+          </ul>
+        </div> -->
+          <div class="row align-items-center">
+            <h5>Tecnologias utilizadas</h5>
+            <ul class="list-unstyled row align-items-center">
+              <li class="col col-6 col-md-1 m-3"><img
+                  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain-wordmark.svg" width="40"
+                  height="40" /></li>
+              <li class="col col-6 col-md-1 m-3"><img
+                  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" width="40"
+                  height="40" /></li>
+              <li class="col col-6 col-md-1 m-3"><img
+                  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg" width="40"
+                  height="40" /></li>
+              <li class="col col-6 col-md-1 m-3"><img
+                  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original-wordmark.svg"
+                  width="40" height="40" /></li>
+              <li class="col col-6 col-md-1 m-3"><img src="https://day-journal.com/memo/images/logo/mapboxgljs.png"
+                  width="100" height="50" /></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>
