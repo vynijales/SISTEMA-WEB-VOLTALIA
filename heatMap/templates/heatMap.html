@@ -66,7 +66,7 @@
                 <option value="Janeiro22">Janeiro 2021</option>
               </select>
               <label for="floatingSelect">Amostras</label>
-            </div>
+            </div>       
           </form>
         </div>
       </div>
@@ -79,11 +79,16 @@
   <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoidnluaWphbGVzIiwiYSI6ImNsZjh4YWo5bDBpaHMzcmtlZzM3MGJoZ2gifQ._Wm3t6w7QFppRKUvL6CXYA';
 
-    // mapboxgl.accessToken = 'YOUR_ACCESS_TOKEN_HERE';
+    // {% for coordenada in coordenadas %}
+    //             <li>{{ coordenada.id }} - </li>
+    //           {% endfor%} 
+    //           {% csrf_token %}
+
+    let mesEscolhido = "janeiro21";
 
     let coordinates = [
       [16.90874, 45.34907],
-      [17.15, 4.317083],
+      [17.15, 43.17083],
       [17.40555, 44.00693],
       [17.10456, 42.80334],
       [17.33147, 43.25468],
@@ -112,8 +117,8 @@
     let map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/streets-v11',
-      center: [1.690874, 4.534907],
-      zoom: 1,
+      center: [16.90874, 45.34907],
+      zoom: 2,
     });
 
     map.on('load', function () {
@@ -130,9 +135,9 @@
             'interpolate',
             ['linear'],
             ['get', 'weight'],
-              0, 'hsl(240, 100%, 50%)',
-              2, 'hsl(60, 100%, 50%)',
-              4, 'hsl(30, 100%, 50%)',
+              0, 'hsl(120, 100%, 50%)',
+              2, 'hsl(90, 100%, 50%)',
+              4, 'hsl(60, 100%, 50%)',
               6, 'hsl(0, 100%, 50%)'
 
           ],
@@ -165,10 +170,10 @@
     // Formulário
     const form = document.getElementById('myForm');
     const select = document.getElementById('meses');
-
     select.addEventListener('change', function () {
       form.submit();
     });
+    
 
 
 
@@ -187,18 +192,10 @@
             <li class="mb-2">Este site foi projetado com base no modelo fornecido pela empresa Voltalia
               (www.voltalia.com) e inclui o uso do logotipo da empresa. Agradecemos à Voltalia pela disponibilização do
               modelo e pela inspiração para o design deste site.</li>
-            <!-- <li class="mb-2">Atualmente v1.0.0-alpha.</li> -->
           </ul>
         </div>
         <div class="row d-flex align-items-center row-sm-6 row-md-8">
-          <!-- <div class="row">
-          <h5>Entre em contato</h5>
-          <ul class="list-unstyled">
-            <li class="row mb-2"><a href="mailto:vynijales@gmail.com">E-mail pessoal</a></li>
-            <li class="row mb-2"><a href="mailto:matheus.jales@alunos.ufersa.edu.br">E-mail da UFERSA</a></li>
-            <li class="row mb-2"><a href="https://wa.me/5584933004187">WhatsApp pessoal</a></li>
-          </ul>
-        </div> -->
+  
           <div class="row align-items-center">
             <h5>Tecnologias utilizadas</h5>
             <ul class="list-unstyled row align-items-center">
@@ -216,6 +213,11 @@
                   width="40" height="40" /></li>
               <li class="col col-6 col-md-1 m-3"><img src="https://day-journal.com/memo/images/logo/mapboxgljs.png"
                   width="100" height="50" /></li>
+              {% for coordenada in coordenadas %}
+                <li>ID: {{ coordenada.id }}, Latitude {{ coordenada.latitude }}, Longitude {{ coordenada.longitude }}.</li>
+              {% endfor%} 
+              {% csrf_token %}
+              
             </ul>
           </div>
         </div>
