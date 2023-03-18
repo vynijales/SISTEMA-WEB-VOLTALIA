@@ -3,4 +3,5 @@ from .views import heatMap
 
 urlpatterns = [
     path('', heatMap),
+    path('', heatMap, name="selected"),
 ]
