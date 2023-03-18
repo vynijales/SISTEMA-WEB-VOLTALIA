@@ -48,15 +48,15 @@
           </a>
         </div>
         <div class="col col-6 col-md-4">
-          <form id="myForm" action="{% url 'salvar' %}" method="post">
+          <form id="myForm" action="{% url 'selected' %}" method="post">
             <div class="form-floating">
               <!-- <select name="myselect" id="myselect" onchange="this.form.submit()"></select> -->
-              <select class="form-select" id="floatingSelect" aria-label="Floating label select example" name="selected"
-                onchange="alterandoMes(mes)">
-                <option value="janeiro21">Janeiro 2021</option>
-                <option value="fevereiro21">Fevereiro 2021</option>
-                <option value="marco21">Março 2021</option>
-                <option value="abril21">Abril 2021</option>
+              <select class="form-select" id="floatingSelect" aria-label="Floating label select example" name="mes"
+                onchange="this.form.submit()" value="{{numeroMes}}">
+                <option value="janeiro21" {% if vmes == "janeiro21" %}selected="select"{% endif %}>Janeiro 2021</option>
+                <option value="fevereiro21" {% if vmes == "fevereiro21" %}selected="select"{% endif %} >Fevereiro 2021</option>
+                <option value="marco21" {% if vmes == "marco21" %}selected="select"{% endif %} >Março 2021</option>
+                <option value="abril21" {% if vmes == "abril21" %}selected="select"{% endif %} >Abril 2021</option>
                 <option value="maio21">Maio 2021</option>
                 <option value="junho21">Junho 2021</option>
                 <option value="julho21">Julho 2021</option>
@@ -96,11 +96,11 @@
 
     let coordinates = {{ coordenadas_list }};
 
-let weights = [];
+let weights = {{ weights }};
 
-for (let i = 0; i < 29 ;i++) {
-  weights.push(Math.random())
-}
+// for (let i = 0; i < 29 ;i++) {
+//   weights.push(Math.random())
+// }
 
 let data = {
   type: 'FeatureCollection',
@@ -230,18 +230,6 @@ map.on('load', function () {
       </div>
     </div>
   </footer>
-  <script>
-    let mes = document.getElementsByName("selected")[0].value || "janeiro21"
-
-    function alterandoMes(m) {
-      return selectedOption = document.getElementsByName("selected")[0].value;
-    }
-
-    document.getElementsByName("selected")[0].addEventListener('change', function () {
-      mes = alterandoMes();
-    });
-
-  </script>
 </body>
 
 </html>
