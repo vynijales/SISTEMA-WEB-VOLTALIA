@@ -6,8 +6,8 @@ from .bd.pythonSQL import catchAllbyID
 
 class Coordenadas(models.Model):
     id = models.IntegerField(primary_key=True)
-    latitude = models.CharField(max_length=10)
-    longitude = models.CharField(max_length=10)
+    longitude = models.DecimalField(max_digits=8, decimal_places=5, blank=True, null=True)
+    latitude = models.DecimalField(max_digits=8, decimal_places=5, blank=True, null=True)
 
     def __str__(self) -> int:
         return (self.id, [self.latitude, self.longitude]) # Retorna o id e as coordenadas, ao invés do objeto
@@ -38,3 +38,7 @@ class Meses(models.Model):
     class Meta:
         managed = False
         db_table = 'meses'
+
+# class Performance:
+#     id = models.OneToOneField(Coordenadas, models.DO_NOTHING, db_column='id', primary_key=True)
+#     resultado = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
