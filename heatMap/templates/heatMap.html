@@ -10,6 +10,15 @@
   <link href='https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.css' rel='stylesheet' />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+  <!-- Adicione o jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Adicione as bibliotecas do Highcharts -->
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+
+
+
   <link rel="stylesheet" href="{% static 'css/style.css' %}"> <!-- Carregando css -->
 </head>
 
@@ -17,8 +26,8 @@
   <header class="fixed-top">
     <div class="container text-left">
       <div class="row align-items-center logo ">
-        <div class="col d-flex align-items-center col-sm-6 col-md-8">
-          <a href="#">
+        <div class="col d-flex align-items-center col-sm-6 col-md-8"> <!-- Logo Voltalia -->
+          <a href="https://www.voltalia.com/">
             <img id="logo"
               src="https://www.voltalia.com/sites/g/files/knoqqb77836/themes/site/nir_pid3850/dist/images/logo.png"
               alt="Voltalia">
@@ -46,6 +55,8 @@
   </header>
 
   <div class="" id='map'></div> <!-- Criando o o mapa, através da API do MAPBOX GL -->
+
+  <div id="container" style="height: 700px;border: solid 2px #bbb;"></div>
 
   <footer class="bd-footer ">
     <div class="container py-4 py-md-5 px-4 px-md-3 text-body-secondary">
@@ -87,86 +98,141 @@
     </div>
   </footer>
 
+
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.js"></script>
-    <script>
-      mapboxgl.accessToken =
-        "pk.eyJ1IjoidnluaWphbGVzIiwiYSI6ImNsZjh4YWo5bDBpaHMzcmtlZzM3MGJoZ2gifQ._Wm3t6w7QFppRKUvL6CXYA";
-        
-      let coordinates = {{ coordenadas_list }};
-      let weights = {{ meses_lista }};
+  <script>
+    mapboxgl.accessToken =
+      "pk.eyJ1IjoidnluaWphbGVzIiwiYSI6ImNsZjh4YWo5bDBpaHMzcmtlZzM3MGJoZ2gifQ._Wm3t6w7QFppRKUvL6CXYA";
 
-      let data = {
-        type: "FeatureCollection",
-        features: coordinates.map((coordinate, index) => {
-          return {
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates: coordinate,
-            },
-            properties: {
-              weight: weights[index],
-            },
-          };
-        }),
-      };
+    let coordinates = {{ coordenadas_list }};
+    let weights = {{ meses_lista }};
 
-      let map = new mapboxgl.Map({
-        container: "map",
-        style: "mapbox://styles/mapbox/streets-v11",
-        center: [16.90874, 45.34907],
-        zoom: 2,
-      });
-
-      map.on("load", function () {
-        // Adiciona o mapa de calor
-        map.addLayer({
-          id: "heatmap",
-          type: "circle",
-          source: {
-            type: "geojson",
-            data: data,
+    let data = {
+      type: "FeatureCollection",
+      features: coordinates.map((coordinate, index) => {
+        return {
+          type: "Feature",
+          geometry: {
+            type: "Point",
+            coordinates: coordinate,
           },
-          paint: {
-            "circle-color": [
-              "interpolate",
-              ["linear"],
-              ["get", "weight"],
-              0,
-              "hsl(0, 100%, 50%)",
-              0.6,
-              "hsl(60, 100%, 50%)",
-              1,
-              "hsl(120, 100%, 50%)",
+          properties: {
+            weight: weights[index],
+          },
+        };
+      }),
+    };
+
+    let map = new mapboxgl.Map({
+      container: "map",
+      style: "mapbox://styles/mapbox/streets-v11",
+      center: [16.90874, 45.34907],
+      zoom: 2,
+    });
+
+    map.on("load", function () {
+      // Adiciona o mapa de calor
+      map.addLayer({
+        id: "heatmap",
+        type: "circle",
+        source: {
+          type: "geojson",
+          data: data,
+        },
+        paint: {
+          "circle-color": [
+            "interpolate",
+            ["linear"],
+            ["get", "weight"],
+            0,
+            "hsl(0, 100%, 50%)",
+            0.6,
+            "hsl(60, 100%, 50%)",
+            1,
+            "hsl(120, 100%, 50%)",
+          ],
+          "circle-radius": {
+            stops: [
+              [0, 5],
+              [2, 10],
+              [4, 15],
+              [6, 20],
+              [8, 25],
             ],
-            "circle-radius": {
-              stops: [
-                [0, 5],
-                [2, 10],
-                [4, 15],
-                [6, 20],
-                [8, 25],
-              ],
-            },
-            "circle-opacity": 0.5,
-            "circle-radius": 30,
           },
-        });
-
-        // Adiciona os marcadores
-        coordinates.forEach((element, index) => {
-          let marker = new mapboxgl.Marker().setLngLat(element).addTo(map);
-
-          // Adiciona o pop-up ao clicar no marcador
-          let popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
-            `ID: ${element[2]}<br>Latitude: ${element[0]},<br>Longitude:${element[1]}<br>Performance: ${weights[index]*100}%`
-          );
-
-          marker.setPopup(popup);
-        });
+          "circle-opacity": 0.5,
+          "circle-radius": 30,
+        },
       });
-    </script>
 
+      // Adiciona os marcadores
+      coordinates.forEach((element, index) => {
+        let marker = new mapboxgl.Marker().setLngLat(element).addTo(map);
+
+        // Adiciona o pop-up ao clicar no marcador
+        let popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
+          `ID: <a href="#container" class="nodecoration" style="text-decoration:none;">${element[2]}</a><br>Latitude: ${element[0]},<br>Longitude:${element[1]}<br>Performance: ${weights[index] * 100}%`
+        );
+
+        marker.setPopup(popup);
+      });
+    });
+  </script>
+
+  <script>
+
+    let select = document.getElementById(name="floatingSelect");
+    let opcaoTexto = select.options[select.selectedIndex].text;
+
+    document.addEventListener('DOMContentLoaded', function () {
+    const chart = Highcharts.chart('container', {
+        chart: {
+            type: 'bar'
+        },
+        title: {
+            text: `Performance de ${opcaoTexto}`
+        },
+        xAxis: {
+            title: {
+                text: 'ID',
+                align: 'high',
+                rotation: 0
+            },
+            categories: coordinates.map(element => element[2]),
+            labels: {
+                rotation: 0,
+                align: 'center',
+                style: {
+                    fontSize: '10px',
+                    fontFamily: 'Verdana, sans-serif'
+                }
+            }
+        },
+        yAxis: {
+            title: {
+                text: 'Valor',
+                align: 'high'
+            },
+            max: 1
+        },
+        series: [{
+            name: document.getElementsByName("mes")[0].value,
+            data: weights,
+            dataLabels: {
+                enabled: true,
+                formatter: function () {
+                    if (this.y != 0) {
+                        return this.y.toFixed(2)
+                    };
+                }
+            }
+        }]
+    });
+});
+
+
+
+  </script>
 </body>
 
 </html>

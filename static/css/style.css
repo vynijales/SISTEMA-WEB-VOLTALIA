@@ -24,3 +24,7 @@ body {
 .teste {
     background-color: aqua;
 }
+
+.nodecoration {
+    text-decoration: none;
+}
