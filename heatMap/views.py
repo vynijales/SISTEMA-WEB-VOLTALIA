@@ -6,7 +6,7 @@ def heatMap(request):
     vmes = "janeiro21"
     coordenadas = Coordenadas.objects.all()
     meses = Meses.objects.all()
-    coordenadas_list = [[float(coord.longitude), float(coord.latitude)] for coord in coordenadas]
+    coordenadas_list = [[float(coord.longitude), float(coord.latitude), coord.id] for coord in coordenadas]
     meses_lista = []
 
     if request.method == 'POST':
@@ -56,13 +56,12 @@ def heatMap(request):
             {'valor': 'dezembro21', 'nome': 'Dezembro 2021'},
             {'valor': 'janeiro22', 'nome': 'Janeiro 2022'},
         ]
+    
     context = {
-        "coordenadas": coordenadas,
-        "meses": meses,
         "coordenadas_list": coordenadas_list,
         "meses_lista": meses_lista,
         "vmes": vmes,
-        "lista": valores
+        "lista": valores,
     }
 
     return render(
