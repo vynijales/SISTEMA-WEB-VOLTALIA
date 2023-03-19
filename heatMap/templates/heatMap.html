@@ -56,7 +56,7 @@
 
   <div class="" id='map'></div> <!-- Criando o o mapa, através da API do MAPBOX GL -->
 
-  <div id="container" style="height: 700px;border: solid 2px #bbb;"></div>
+  <div id="container" style="height: 700px;border: solid 2px #bbb; padding-top: 58px;"></div>
 
   <footer class="bd-footer ">
     <div class="container py-4 py-md-5 px-4 px-md-3 text-body-secondary">
@@ -171,7 +171,7 @@
 
         // Adiciona o pop-up ao clicar no marcador
         let popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
-          `ID: <a href="#container" class="nodecoration" style="text-decoration:none;">${element[2]}</a><br>Latitude: ${element[0]},<br>Longitude:${element[1]}<br>Performance: ${weights[index] * 100}%`
+          `ID: <a href="#container" class="nodecoration" style="text-decoration:none;">${element[2]}</a><br>Latitude: ${element[0]}<br>Longitude:${element[1]}<br>Performance: ${weights[index] * 100}%`
         );
 
         marker.setPopup(popup);
@@ -181,55 +181,55 @@
 
   <script>
 
-    let select = document.getElementById(name="floatingSelect");
-    let opcaoTexto = select.options[select.selectedIndex].text;
+let select = document.getElementById(name = "floatingSelect");
+let opcaoTexto = select.options[select.selectedIndex].text;
 
-    document.addEventListener('DOMContentLoaded', function () {
-    const chart = Highcharts.chart('container', {
-        chart: {
-            type: 'bar'
-        },
-        title: {
-            text: `Performance de ${opcaoTexto}`
-        },
-        xAxis: {
-            title: {
-                text: 'ID',
-                align: 'high',
-                rotation: 0
-            },
-            categories: coordinates.map(element => element[2]),
-            labels: {
-                rotation: 0,
-                align: 'center',
-                style: {
-                    fontSize: '10px',
-                    fontFamily: 'Verdana, sans-serif'
-                }
-            }
-        },
-        yAxis: {
-            title: {
-                text: 'Valor',
-                align: 'high'
-            },
-            max: 1
-        },
-        series: [{
-            name: document.getElementsByName("mes")[0].value,
-            data: weights,
-            dataLabels: {
-                enabled: true,
-                formatter: function () {
-                    if (this.y != 0) {
-                        return this.y.toFixed(2)
-                    };
-                }
-            }
-        }]
-    });
+document.addEventListener('DOMContentLoaded', function () {
+  const chart = Highcharts.chart('container', {
+    chart: {
+      type: 'column' // Altera o tipo do gráfico para colunas verticais
+    },
+    title: {
+      text: `${opcaoTexto}`
+    },
+    xAxis: {
+      categories: coordinates.map(element => element[2]), // Setando o valor do ID
+      title: {
+        text: 'ID'
+      }
+    },
+    yAxis: {
+      max: 100,
+      title: {
+        text: 'Performance'
+      }
+    },
+    series: [{
+      name: opcaoTexto,
+      data: weights.map(element => element * 100),
+      dataLabels: {
+        enabled: true,
+        formatter: function () {
+          if (this.y != 0) {
+            return this.y.toFixed(2) + "%"
+          };
+        }
+      }
+    }],
+    plotOptions: {
+      column: { // Ajusta as opções de colunas
+        dataLabels: {
+          enabled: true
+        }
+      }
+    },
+    tooltip: {
+      formatter: function () {
+        return `<b>ID ${this.point.category} </b>: ${this.y.toFixed(2)}%`;
+      }
+    }
+  });
 });
-
 
 
   </script>
