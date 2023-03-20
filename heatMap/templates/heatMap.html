@@ -8,6 +8,9 @@
   <title>Voltalia</title>
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
+  <!-- Importando o ícone da Voltalia -->
+  <link rel="icon" href="{% static 'img/icone.png' %}" type="image/png">
+
   <!-- Importando as bilbiotecas do bootstrap -->
   <link href='https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.css' rel='stylesheet' />
 
@@ -34,7 +37,7 @@
       <div class="row align-items-center">
         <!-- Logo da Voltalia -->
         <div class="col d-flex align-items-center col-sm-6 col-md-8">
-          <a href="https://www.voltalia.com/">
+          <a href="#">
             <!-- Carregando imagem local -->
             <img id="logo" src="{% static 'img/logo.png' %}" alt="Voltalia">
           </a>
@@ -84,8 +87,8 @@
   <footer class="bg-dark text-light">
     <div class="container py-4 py-md-5 px-4 px-md-3">
       <div class="row align-items-center">
-        <div class="col-12 col-md-6 mb-3">
-          <h4 class="fs-5">Projeto: Voltalia</h4>
+        <div class="col-12 col-md-6 mb-3"><a href="https://www.voltalia.com/" target="_blank" class="nodecoration">
+          <h4 class="fs-5">Projeto: Voltalia</h4></a>
           <ul class="list-unstyled small">
             <li class="mb-2">Este site foi projetado com base no modelo fornecido pela empresa Voltalia (www.voltalia.com) e inclui o uso do logotipo da empresa. Agradecemos à Voltalia pela disponibilização do modelo e pela inspiração para o design deste site.</li>
           </ul>
