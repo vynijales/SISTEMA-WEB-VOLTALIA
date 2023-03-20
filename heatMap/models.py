@@ -39,6 +39,13 @@ class Meses(models.Model):
         managed = False
         db_table = 'meses'
 
+class Data(models.Model):
+    id = models.IntegerField(primary_key=True)
+    valor = models.CharField(max_length=100)
+    nome = models.CharField(max_length=100)
+
+    def __str__(self) -> int:
+        return self.nome # Retorna o nome da data, ao invés do objeto
 # class Performance:
 #     id = models.OneToOneField(Coordenadas, models.DO_NOTHING, db_column='id', primary_key=True)
 #     resultado = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)

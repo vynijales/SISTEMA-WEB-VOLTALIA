@@ -1,62 +1,56 @@
+{% load static %} <!-- Carregando arquivos estáticos -->
+
 <!DOCTYPE html>
 <html>
 
 <head>
   <meta charset='utf-8' />
-  <title>Mapa de calor com Mapbox GL JS</title>
+  <title>Voltalia</title>
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+  <!-- Importando as bilbiotecas do bootstrap -->
   <link href='https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.css' rel='stylesheet' />
+
+  <!-- Importando as bibliotecas do bootstrap -->
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+  <!-- Adicionando as bibliotecas do Highcharts -->
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+
+  <!-- Importando arquivos locais estáticos -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}"> <!-- Carregando css -->
+
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-    }
 
-    .fixed-top {
-      position: fixed;
-      top: 0;
-      right: 0;
-      left: 0;
-      z-index: 1030;
-      background-color: #fff;
-      border-bottom: solid 1px #eee;
-    }
-
-    #map {
-      height: 700px;
-      border: solid 20px #000;
-      margin-top: 58px;
-    }
-
-    .teste {
-      background-color: aqua;
-    }
   </style>
 </head>
+
 <body>
+  <!-- Header Fixo -->
   <header class="fixed-top">
     <div class="container text-left">
-      <div class="row align-items-center logo ">
+      <div class="row align-items-center">
+        <!-- Logo da Voltalia -->
         <div class="col d-flex align-items-center col-sm-6 col-md-8">
-          <a href="#">
-            <img id="logo"
-              src="https://www.voltalia.com/sites/g/files/knoqqb77836/themes/site/nir_pid3850/dist/images/logo.png"
-              alt="Voltalia">
+          <a href="https://www.voltalia.com/">
+            <!-- Carregando imagem local -->
+            <img id="logo" src="{% static 'img/logo.png' %}" alt="Voltalia">
           </a>
         </div>
+        <!-- Formulário -->
         <div class="col col-6 col-md-4">
-          <form id="myForm" action="{% url 'selected' %}" method="post">
+          <form action="{% url 'selected' %}" method="post">
             <div class="form-floating">
-              <!-- <select name="myselect" id="myselect" onchange="this.form.submit()"></select> -->
               <select class="form-select" id="floatingSelect" aria-label="Floating label select example" name="mes"
                 onchange="this.form.submit()" value="{{numeroMes}}">
                 {% for l in lista %}
-                  <option value="{{ l.valor }}" {% if vmes == l.valor %}selected="selected"{% endif %}>{{ l.nome }}</option>
+                <option value="{{ l.valor }}" {% if vmes == l.valor %}selected{% endif %}>{{ l.nome }}
+                </option>
                 {% endfor %}
               </select>
-              <label for="floatingSelect">Amostras</label>
+              <label for="floatingSelect">Datas</label>
             </div>
             {% csrf_token %}
           </form>
@@ -66,22 +60,72 @@
 
   </header>
 
-  <div class="border" id='map'></div>
-  <script src='https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.js'></script>
+  <!-- HeatMap -->
+  <div class="" id='map'></div>
+
+  <div class="legend">
+    <div class="legend-item">
+      <div class="color-box high"></div>
+      <div class="label">Alto desempenho</div>
+    </div>
+    <div class="legend-item">
+      <div class="color-box medium"></div>
+      <div class="label">Desempenho médio</div>
+    </div>
+    <div class="legend-item">
+      <div class="color-box low"></div>
+      <div class="label">Baixo desempenho</div>
+    </div>
+  </div>
+
+  <!-- HiCharts -->
+  <div id="container"></div>
+
+  <footer class="bg-dark text-light">
+    <div class="container py-4 py-md-5 px-4 px-md-3">
+      <div class="row align-items-center">
+        <div class="col-12 col-md-6 mb-3">
+          <h4 class="fs-5">Projeto: Voltalia</h4>
+          <ul class="list-unstyled small">
+            <li class="mb-2">Este site foi projetado com base no modelo fornecido pela empresa Voltalia (www.voltalia.com) e inclui o uso do logotipo da empresa. Agradecemos à Voltalia pela disponibilização do modelo e pela inspiração para o design deste site.</li>
+          </ul>
+        </div>
+        <div class="col-12 col-md-6 d-flex justify-content-md-end">
+          <div class="row align-items-center">
+            <h5 class="me-3">Tecnologias utilizadas</h5>
+            <ul class="list-unstyled row align-items-center mb-0">
+              <!-- <li class="col col-6 col-md-1 m-3"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain-wordmark.svg" width="40" height="40" /></li> -->
+              <li class="col col-6 col-md-1 m-3"><img src="https://www.djangoproject.com/m/img/logos/django-logo-negative.png" height="30" /></li>
+              <li class="col col-6 col-md-1 m-3"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" width="40" height="40" /></li>
+              <li class="col col-6 col-md-1 m-3"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg" width="40" height="40" /></li>
+              <li class="col col-6 col-md-1 m-3"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original-wordmark.svg" width="40" height="40" /></li>
+              <li class="col col-6 col-md-1 m-3"><img src="https://static-00.iconduck.com/assets.00/highcharts-icon-512x487-mq4vqgn3.png" width="40" height="40"/></li>
+              <li class="col col-6 col-md-1 m-3"><img src="https://day-journal.com/memo/images/logo/mapboxgljs.png" width="100" height="50" /></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+
+  <!-- Criando o HeatMap usando MapBox GL -->
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.js"></script>
+  <script src="{% static 'js/script.js'%}"></script>
   <script>
-    mapboxgl.accessToken = 'pk.eyJ1IjoidnluaWphbGVzIiwiYSI6ImNsZjh4YWo5bDBpaHMzcmtlZzM3MGJoZ2gifQ._Wm3t6w7QFppRKUvL6CXYA';
+    mapboxgl.accessToken =
+      "pk.eyJ1IjoidnluaWphbGVzIiwiYSI6ImNsZjh4YWo5bDBpaHMzcmtlZzM3MGJoZ2gifQ._Wm3t6w7QFppRKUvL6CXYA";
 
-        let coordinates = {{ coordenadas_list }};
-
+    let coordinates = {{ coordenadas_list }};
     let weights = {{ meses_lista }};
 
     let data = {
-      type: 'FeatureCollection',
+      type: "FeatureCollection",
       features: coordinates.map((coordinate, index) => {
         return {
-          type: 'Feature',
+          type: "Feature",
           geometry: {
-            type: 'Point',
+            type: "Point",
             coordinates: coordinate,
           },
           properties: {
@@ -91,97 +135,140 @@
       }),
     };
 
-let map = new mapboxgl.Map({
-  container: 'map',
-  style: 'mapbox://styles/mapbox/streets-v11',
-  center: [16.90874, 45.34907],
-  zoom: 2,
-});
+    let map = new mapboxgl.Map({
+      container: "map",
+      style: "mapbox://styles/mapbox/streets-v11",
+      center: [45.34907, 16.90874],
+      zoom: 5,
+    });
 
-map.on('load', function () {
-  // Adiciona o mapa de calor
-  map.addLayer({
-    id: 'heatmap',
-    type: 'circle',
-    source: {
-      type: 'geojson',
-      data: data,
-    },
-    'paint': {
-      'circle-color': [
-        'interpolate',
-        ['linear'],
-        ['get', 'weight'],
-        0, 'hsl(0, 100%, 50%)',
-        0.2, 'hsl(20, 100%, 50%)',
-        0.4, 'hsl(40, 100%, 50%)',
-        0.6, 'hsl(60, 100%, 50%)',
-        0.8, 'hsl(80, 100%, 50%)',
-        1, 'hsl(100, 100%, 50%)'
-      ],
-      'circle-radius': {
-        'stops': [
-          [0, 5],
-          [2, 10],
-          [4, 15],
-          [6, 20],
-          [8, 25]
-        ]
-      },
-      'circle-opacity': 0.5,
-      'circle-radius': 30
-    }
+    map.on("load", function () {
+      // Adiciona o mapa de calor
+      map.addLayer({
+        id: "heatmap",
+        type: "circle",
+        source: {
+          type: "geojson",
+          data: data,
+        },
+        paint: {
+          "circle-color": [
+            "interpolate",
+            ["linear"],
+            ["get", "weight"],
+            0,
+            "hsl(0, 100%, 50%)",
+            0.6,
+            "hsl(60, 100%, 50%)",
+            1,
+            "hsl(120, 100%, 50%)",
+          ],
+          "circle-radius": {
+            stops: [
+              [0, 5],
+              [2, 10],
+              [4, 15],
+              [6, 20],
+              [8, 25],
+            ],
+          },
+          "circle-opacity": 0.5,
+          "circle-radius": 30,
+        },
+      });
 
-  });
+      // Adiciona os marcadores
+      coordinates.forEach((element, index) => {
+        let marker = new mapboxgl.Marker().setLngLat(element).addTo(map);
 
+        // Adiciona o pop-up ao clicar no marcador
+        let popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
+          `ID: <a href="#container" class="nodecoration" style="text-decoration:none;">${element[2]}</a><br>Latitude: ${element[0]}<br>Longitude:${element[1]}<br>Performance: ${weights[index] * 100}%`
+        );
 
-  // Adiciona o marcador
-  coordinates.forEach(element => {
-    new mapboxgl.Marker()
-      .setLngLat(element)
-      .addTo(map);
-  });
-});
+        marker.setPopup(popup);
+      });
+      legend.style.display = "block";
+    });
   </script>
-  <footer class="bd-footer ">
-    <div class="container py-4 py-md-5 px-4 px-md-3 text-body-secondary">
-      <div class="row align-items-center">
-        <div class="row mb-3">
-          <a class="d-inline-flex align-items-center mb-2 text-body-secondary text-decoration-none" href="/"
-            aria-label="Bootstrap">
-            <h4 class="fs-5">Projeto: Voltalia</h4>
-          </a>
-          <ul class="list-unstyled small">
-            <li class="mb-2">Este site foi projetado com base no modelo fornecido pela empresa Voltalia
-              (www.voltalia.com) e inclui o uso do logotipo da empresa. Agradecemos à Voltalia pela disponibilização do
-              modelo e pela inspiração para o design deste site.</li>
-          </ul>
-        </div>
-        <div class="row d-flex align-items-center row-sm-6 row-md-8">
 
-          <div class="row align-items-center">
-            <h5>Tecnologias utilizadas</h5>
-            <ul class="list-unstyled row align-items-center">
-              <li class="col col-6 col-md-1 m-3"><img
-                  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain-wordmark.svg" width="40"
-                  height="40" /></li>
-              <li class="col col-6 col-md-1 m-3"><img
-                  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" width="40"
-                  height="40" /></li>
-              <li class="col col-6 col-md-1 m-3"><img
-                  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg" width="40"
-                  height="40" /></li>
-              <li class="col col-6 col-md-1 m-3"><img
-                  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original-wordmark.svg"
-                  width="40" height="40" /></li>
-              <li class="col col-6 col-md-1 m-3"><img src="https://day-journal.com/memo/images/logo/mapboxgljs.png"
-                  width="100" height="50" /></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </footer>
+  <!-- Criando gráfico através do HiCharts -->
+  <script>
+    let select = document.getElementById("floatingSelect");
+    let opcaoTexto = select.options[select.selectedIndex].text;
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const chart = Highcharts.chart('container', {
+        chart: {
+          type: 'column', // Altera o tipo do gráfico para colunas verticais
+          zoomType: 'xy' // Permite o zoom em ambos os eixos
+        },
+        title: {
+          text: `Performance dos equipamentos`
+        },
+        xAxis: {
+          categories: coordinates.map(element => element[2]), // Seta o valor do ID
+          title: {
+            text: 'ID'
+          }
+        },
+        yAxis: {
+          max: 100,
+          title: {
+            text: 'Performance (%)'
+          }
+        },
+        series: [{
+          name: opcaoTexto,
+          data: weights.map(element => element * 100),
+          dataLabels: {
+            enabled: true,
+            formatter: function () {
+              if (this.y != 0) {
+                return this.y.toFixed(2) + "%"
+              };
+            }
+          }
+        }],
+        plotOptions: {
+          column: { // Ajusta as opções de colunas
+            dataLabels: {
+              enabled: true
+            },
+            showInLegend: false, // Remove a legenda
+            minPointLength: 10, // Seta o tamanho mínimo de píxels das colunas para 10
+            point: {
+              events: {
+                click: function () {
+                  const zoom = 10;
+                  const id = this.category; // Pega o ID do ponto clicado
+                  const index = findIndexById(coordinates, id); // Encontra o índice em coordinates correspondente ao ID
+                  const lat = coordinates[index][0]; // Extrai a latitude
+                  const lng = coordinates[index][1]; // Extrai a longitude
+                  // Centraliza o mapa nas coordenadas encontradas
+                  map.setCenter([lat, lng]);
+                  map.setZoom(zoom);
+                  window.scrollTo(0, 0);
+
+                }
+              }
+            }
+          }
+        },
+        tooltip: {
+          formatter: function () {
+            return `<b>ID ${this.point.category} </b>: ${this.y.toFixed(2)}%`;
+          }
+        },
+        credits: {
+          enabled: false
+        }
+      });
+    });
+
+
+
+  </script>
 </body>
 
 </html>
