@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="{% static 'css/style.css' %}"> <!-- Carregando css -->
 
   <style>
-    
+
   </style>
 </head>
 
@@ -61,7 +61,7 @@
   </header>
 
   <!-- HeatMap -->
-  <div class="" id='map'></div> 
+  <div class="" id='map'></div>
 
   <div class="legend">
     <div class="legend-item">
@@ -81,48 +81,37 @@
   <!-- HiCharts -->
   <div id="container"></div>
 
-  <footer class="bd-footer ">
-    <div class="container py-4 py-md-5 px-4 px-md-3 text-body-secondary">
+  <footer class="bg-dark text-light">
+    <div class="container py-4 py-md-5 px-4 px-md-3">
       <div class="row align-items-center">
-        <div class="row mb-3">
-          <a class="d-inline-flex align-items-center mb-2 text-body-secondary text-decoration-none" href="/"
-            aria-label="Bootstrap">
-            <h4 class="fs-5">Projeto: Voltalia</h4>
-          </a>
+        <div class="col-12 col-md-6 mb-3">
+          <h4 class="fs-5">Projeto: Voltalia</h4>
           <ul class="list-unstyled small">
-            <li class="mb-2">Este site foi projetado com base no modelo fornecido pela empresa Voltalia
-              (www.voltalia.com) e inclui o uso do logotipo da empresa. Agradecemos à Voltalia pela disponibilização do
-              modelo e pela inspiração para o design deste site.</li>
+            <li class="mb-2">Este site foi projetado com base no modelo fornecido pela empresa Voltalia (www.voltalia.com) e inclui o uso do logotipo da empresa. Agradecemos à Voltalia pela disponibilização do modelo e pela inspiração para o design deste site.</li>
           </ul>
         </div>
-        <div class="row d-flex align-items-center row-sm-6 row-md-8">
-
+        <div class="col-12 col-md-6 d-flex justify-content-md-end">
           <div class="row align-items-center">
-            <h5>Tecnologias utilizadas</h5>
-            <ul class="list-unstyled row align-items-center">
-              <li class="col col-6 col-md-1 m-3"><img
-                  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain-wordmark.svg" width="40"
-                  height="40" /></li>
-              <li class="col col-6 col-md-1 m-3"><img
-                  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" width="40"
-                  height="40" /></li>
-              <li class="col col-6 col-md-1 m-3"><img
-                  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg" width="40"
-                  height="40" /></li>
-              <li class="col col-6 col-md-1 m-3"><img
-                  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original-wordmark.svg"
-                  width="40" height="40" /></li>
-              <li class="col col-6 col-md-1 m-3"><img src="https://day-journal.com/memo/images/logo/mapboxgljs.png"
-                  width="100" height="50" /></li>
+            <h5 class="me-3">Tecnologias utilizadas</h5>
+            <ul class="list-unstyled row align-items-center mb-0">
+              <!-- <li class="col col-6 col-md-1 m-3"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain-wordmark.svg" width="40" height="40" /></li> -->
+              <li class="col col-6 col-md-1 m-3"><img src="https://www.djangoproject.com/m/img/logos/django-logo-negative.png" height="30" /></li>
+              <li class="col col-6 col-md-1 m-3"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" width="40" height="40" /></li>
+              <li class="col col-6 col-md-1 m-3"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg" width="40" height="40" /></li>
+              <li class="col col-6 col-md-1 m-3"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original-wordmark.svg" width="40" height="40" /></li>
+              <li class="col col-6 col-md-1 m-3"><img src="https://static-00.iconduck.com/assets.00/highcharts-icon-512x487-mq4vqgn3.png" width="40" height="40"/></li>
+              <li class="col col-6 col-md-1 m-3"><img src="https://day-journal.com/memo/images/logo/mapboxgljs.png" width="100" height="50" /></li>
             </ul>
           </div>
         </div>
       </div>
     </div>
   </footer>
+  
 
   <!-- Criando o HeatMap usando MapBox GL -->
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.js"></script>
+  <script src="{% static 'js/script.js'%}"></script>
   <script>
     mapboxgl.accessToken =
       "pk.eyJ1IjoidnluaWphbGVzIiwiYSI6ImNsZjh4YWo5bDBpaHMzcmtlZzM3MGJoZ2gifQ._Wm3t6w7QFppRKUvL6CXYA";
@@ -205,86 +194,77 @@
 
   <!-- Criando gráfico através do HiCharts -->
   <script>
-let select = document.getElementById("floatingSelect");
-let opcaoTexto = select.options[select.selectedIndex].text;
+    let select = document.getElementById("floatingSelect");
+    let opcaoTexto = select.options[select.selectedIndex].text;
 
-function findIndexById(list, id) {
-  for (let i = 0; i < list.length; i++) {
-    if (list[i][2] === id) {
-      return i;
-    }
-  }
-  // Se o id não for encontrado, retorna -1
-  return -1;
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-  const chart = Highcharts.chart('container', {
-    chart: {
-      type: 'column', // Altera o tipo do gráfico para colunas verticais
-      zoomType: 'xy' // Permite o zoom em ambos os eixos
-    },
-    title: {
-      text: `Performance dos equipamentos`
-    },
-    xAxis: {
-      categories: coordinates.map(element => element[2]), // Setando o valor do ID
-      title: {
-        text: 'ID'
-      }
-    },
-    yAxis: {
-      max: 100,
-      title: {
-        text: 'Performance (%)'
-      }
-    },
-    series: [{
-      name: opcaoTexto,
-      data: weights.map(element => element * 100),
-      dataLabels: {
-        enabled: true,
-        formatter: function () {
-          if (this.y != 0) {
-            return this.y.toFixed(2) + "%"
-          };
-        }
-      }
-    }],
-    plotOptions: {
-      column: { // Ajusta as opções de colunas
-        dataLabels: {
-          enabled: true
+    document.addEventListener('DOMContentLoaded', function () {
+      const chart = Highcharts.chart('container', {
+        chart: {
+          type: 'column', // Altera o tipo do gráfico para colunas verticais
+          zoomType: 'xy' // Permite o zoom em ambos os eixos
         },
-        minPointLength: 10,
-        point: {
-          events: {
-            click: function () {
-              const zoom = 10;
-              const id = this.category; // Pega o ID do ponto clicado
-              const index = findIndexById(coordinates, id); // Encontra o índice em coordinates correspondente ao ID
-              const lat = coordinates[index][0]; // Extrai a latitude
-              const lng = coordinates[index][1]; // Extrai a longitude
-              // Centraliza o mapa nas coordenadas encontradas
-              map.setCenter([lat, lng]);
-              map.setZoom(zoom);
-              window.scrollTo(0, 0);
-
+        title: {
+          text: `Performance dos equipamentos`
+        },
+        xAxis: {
+          categories: coordinates.map(element => element[2]), // Seta o valor do ID
+          title: {
+            text: 'ID'
+          }
+        },
+        yAxis: {
+          max: 100,
+          title: {
+            text: 'Performance (%)'
+          }
+        },
+        series: [{
+          name: opcaoTexto,
+          data: weights.map(element => element * 100),
+          dataLabels: {
+            enabled: true,
+            formatter: function () {
+              if (this.y != 0) {
+                return this.y.toFixed(2) + "%"
+              };
             }
           }
+        }],
+        plotOptions: {
+          column: { // Ajusta as opções de colunas
+            dataLabels: {
+              enabled: true
+            },
+            showInLegend: false, // Remove a legenda
+            minPointLength: 10, // Seta o tamanho mínimo de píxels das colunas para 10
+            point: {
+              events: {
+                click: function () {
+                  const zoom = 10;
+                  const id = this.category; // Pega o ID do ponto clicado
+                  const index = findIndexById(coordinates, id); // Encontra o índice em coordinates correspondente ao ID
+                  const lat = coordinates[index][0]; // Extrai a latitude
+                  const lng = coordinates[index][1]; // Extrai a longitude
+                  // Centraliza o mapa nas coordenadas encontradas
+                  map.setCenter([lat, lng]);
+                  map.setZoom(zoom);
+                  window.scrollTo(0, 0);
+
+                }
+              }
+            }
+          }
+        },
+        tooltip: {
+          formatter: function () {
+            return `<b>ID ${this.point.category} </b>: ${this.y.toFixed(2)}%`;
+          }
+        },
+        credits: {
+          enabled: false
         }
-      }
-    },
-    tooltip: {
-      formatter: function () {
-        return `<b>ID ${this.point.category} </b>: ${this.y.toFixed(2)}%`;
-      }
-    },
-    credits: {
-      enabled: false
-    }
-  });
-});
+      });
+    });
 
 
 
