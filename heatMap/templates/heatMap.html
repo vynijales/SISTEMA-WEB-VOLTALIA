@@ -5,38 +5,44 @@
 
 <head>
   <meta charset='utf-8' />
-  <title>Mapa de calor com Mapbox GL JS</title>
+  <title>Voltalia</title>
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+  <!-- Importando as bilbiotecas do bootstrap -->
   <link href='https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.css' rel='stylesheet' />
+
+  <!-- Importando as bibliotecas do bootstrap -->
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 
-  <!-- Adicione o jQuery -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-  <!-- Adicione as bibliotecas do Highcharts -->
+  <!-- Adicionando as bibliotecas do Highcharts -->
   <script src="https://code.highcharts.com/highcharts.js"></script>
 
-
-
+  <!-- Importando arquivos locais estáticos -->
   <link rel="stylesheet" href="{% static 'css/style.css' %}"> <!-- Carregando css -->
+
+  <style>
+    
+  </style>
 </head>
 
 <body>
+  <!-- Header Fixo -->
   <header class="fixed-top">
     <div class="container text-left">
-      <div class="row align-items-center logo ">
-        <div class="col d-flex align-items-center col-sm-6 col-md-8"> <!-- Logo Voltalia -->
+      <div class="row align-items-center">
+        <!-- Logo da Voltalia -->
+        <div class="col d-flex align-items-center col-sm-6 col-md-8">
           <a href="https://www.voltalia.com/">
-            <img id="logo"
-              src="https://www.voltalia.com/sites/g/files/knoqqb77836/themes/site/nir_pid3850/dist/images/logo.png"
-              alt="Voltalia">
+            <!-- Carregando imagem local -->
+            <img id="logo" src="{% static 'img/logo.png' %}" alt="Voltalia">
           </a>
         </div>
+        <!-- Formulário -->
         <div class="col col-6 col-md-4">
-          <form id="myForm" action="{% url 'selected' %}" method="post">
+          <form action="{% url 'selected' %}" method="post">
             <div class="form-floating">
-              <!-- <select name="myselect" id="myselect" onchange="this.form.submit()"></select> -->
               <select class="form-select" id="floatingSelect" aria-label="Floating label select example" name="mes"
                 onchange="this.form.submit()" value="{{numeroMes}}">
                 {% for l in lista %}
@@ -44,7 +50,7 @@
                 </option>
                 {% endfor %}
               </select>
-              <label for="floatingSelect">Amostras</label>
+              <label for="floatingSelect">Datas</label>
             </div>
             {% csrf_token %}
           </form>
@@ -54,9 +60,26 @@
 
   </header>
 
-  <div class="" id='map'></div> <!-- Criando o o mapa, através da API do MAPBOX GL -->
+  <!-- HeatMap -->
+  <div class="" id='map'></div> 
 
-  <div id="container" style="height: 700px;border: solid 2px #bbb; padding-top: 58px;"></div>
+  <div class="legend">
+    <div class="legend-item">
+      <div class="color-box high"></div>
+      <div class="label">Alto desempenho</div>
+    </div>
+    <div class="legend-item">
+      <div class="color-box medium"></div>
+      <div class="label">Desempenho médio</div>
+    </div>
+    <div class="legend-item">
+      <div class="color-box low"></div>
+      <div class="label">Baixo desempenho</div>
+    </div>
+  </div>
+
+  <!-- HiCharts -->
+  <div id="container"></div>
 
   <footer class="bd-footer ">
     <div class="container py-4 py-md-5 px-4 px-md-3 text-body-secondary">
@@ -98,7 +121,7 @@
     </div>
   </footer>
 
-
+  <!-- Criando o HeatMap usando MapBox GL -->
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.js"></script>
   <script>
     mapboxgl.accessToken =
@@ -126,8 +149,8 @@
     let map = new mapboxgl.Map({
       container: "map",
       style: "mapbox://styles/mapbox/streets-v11",
-      center: [16.90874, 45.34907],
-      zoom: 2,
+      center: [45.34907, 16.90874],
+      zoom: 5,
     });
 
     map.on("load", function () {
@@ -176,21 +199,33 @@
 
         marker.setPopup(popup);
       });
+      legend.style.display = "block";
     });
   </script>
 
+  <!-- Criando gráfico através do HiCharts -->
   <script>
-
-let select = document.getElementById(name = "floatingSelect");
+let select = document.getElementById("floatingSelect");
 let opcaoTexto = select.options[select.selectedIndex].text;
+
+function findIndexById(list, id) {
+  for (let i = 0; i < list.length; i++) {
+    if (list[i][2] === id) {
+      return i;
+    }
+  }
+  // Se o id não for encontrado, retorna -1
+  return -1;
+}
 
 document.addEventListener('DOMContentLoaded', function () {
   const chart = Highcharts.chart('container', {
     chart: {
-      type: 'column' // Altera o tipo do gráfico para colunas verticais
+      type: 'column', // Altera o tipo do gráfico para colunas verticais
+      zoomType: 'xy' // Permite o zoom em ambos os eixos
     },
     title: {
-      text: `${opcaoTexto}`
+      text: `Performance dos equipamentos`
     },
     xAxis: {
       categories: coordinates.map(element => element[2]), // Setando o valor do ID
@@ -201,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function () {
     yAxis: {
       max: 100,
       title: {
-        text: 'Performance'
+        text: 'Performance (%)'
       }
     },
     series: [{
@@ -220,6 +255,23 @@ document.addEventListener('DOMContentLoaded', function () {
       column: { // Ajusta as opções de colunas
         dataLabels: {
           enabled: true
+        },
+        minPointLength: 10,
+        point: {
+          events: {
+            click: function () {
+              const zoom = 10;
+              const id = this.category; // Pega o ID do ponto clicado
+              const index = findIndexById(coordinates, id); // Encontra o índice em coordinates correspondente ao ID
+              const lat = coordinates[index][0]; // Extrai a latitude
+              const lng = coordinates[index][1]; // Extrai a longitude
+              // Centraliza o mapa nas coordenadas encontradas
+              map.setCenter([lat, lng]);
+              map.setZoom(zoom);
+              window.scrollTo(0, 0);
+
+            }
+          }
         }
       }
     },
@@ -227,9 +279,13 @@ document.addEventListener('DOMContentLoaded', function () {
       formatter: function () {
         return `<b>ID ${this.point.category} </b>: ${this.y.toFixed(2)}%`;
       }
+    },
+    credits: {
+      enabled: false
     }
   });
 });
+
 
 
   </script>

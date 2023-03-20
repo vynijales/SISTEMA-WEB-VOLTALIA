@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Coordenadas, Meses
+from .models import Coordenadas, Meses, Data
 import json
 
 def heatMap(request):
